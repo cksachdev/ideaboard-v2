@@ -40,8 +40,8 @@ export default {
   display: inline-block;
   padding: 4px 8px;
   border-radius: 3px;
-  background-color: #3c82f7;
-  color: #fff;
-  box-shadow: 0 3px 0 #0f69ff;
+  background-color: #3c82f7 !important;
+  color: #fff !important;
+  box-shadow: 0 3px 0 #0f69ff !important;
 }
 </style>
