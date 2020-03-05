@@ -10,8 +10,6 @@
               :options="options" 
               @error="showError" />
 
-              
-              
               <v-card-actions right>
                 <v-btn color="primary" :disabled="!formValid" @click="saveData">Save</v-btn>
                 <v-spacer></v-spacer>
@@ -58,7 +56,7 @@
         })
       },
       removeNewIdea(){
-        this.$emit('removeNewIdea');
+        this.$store.commit('REMOVE_NEW_IDEA')
       }
     }
   }

@@ -16,14 +16,11 @@ export default {
         initAuth() {
             this.$gAuth.signIn()
             .then(GoogleUser => {
-                this.isSignIn = this.$gAuth.isAuthorized
                 const userDetails = GoogleUser.getBasicProfile();
-                const user = {
-                    name: userDetails.Ad,
-                    email: userDetails.zu
-                }
-                localStorage.setItem('ideaBoardUser', JSON.stringify(user));
-                this.$emit('loggedInSuccess')
+                this.$store.commit('SET_USER_DETAILS', userDetails)
+                this.$store.commit('SET_USER_EMAIL', userDetails.zu)
+                this.$store.commit('SET_USER_LOGGEDIN', this.$gAuth.isAuthorized)
+                localStorage.setItem('ideaBoardUser', JSON.stringify(userDetails));
             })
             .catch(error  => {
             //on fail do something

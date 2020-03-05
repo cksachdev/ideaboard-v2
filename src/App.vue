@@ -6,10 +6,7 @@
         max-width="500"
         elevation="0"
       >
-        <v-toolbar
-          color="indigo"
-          dark
-        >
+        <v-toolbar color="indigo" dark>
           <v-btn icon @click="addNewIdea()" v-if="isUserLoggedIn">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
@@ -20,13 +17,8 @@
           </v-btn>
         </v-toolbar>
 
-        <v-container fluid v-if="isUserLoggedIn">
-          <ListIdeas v-if="ideaList" />
-          <IdeaForm v-if="isNewIdea" @removeNewIdea="removeNewIdea" />
-        </v-container>
-        <v-container fluid v-if="!isUserLoggedIn">
-          <Login @loggedInSuccess="loggedInSuccess" />
-        </v-container>
+        <router-view></router-view>
+
       </v-card>
       
     </v-content>
@@ -34,47 +26,22 @@
 </template>
 
 <script>
-import IdeaForm from './components/IdeaForm';
-import ListIdeas from './components/ListIdeas';
-import Login from './components/Login';
-
+import { mapState } from 'vuex'
 export default {
   name: 'App',
-
-  components: {
-    IdeaForm,
-    ListIdeas,
-    Login,
-  },
-
   data: () => ({
-    isUserLoggedIn: false,
-    userDetails: {},
-    isNewIdea: false,
-    ideaList: false
   }),
-  created () {
-    this.getUserDetails();
+  computed: {
+    ...mapState([
+        'isUserLoggedIn',
+    ]),
   },
   methods: {
-    getUserDetails() {
-      if(localStorage.getItem('ideaBoardUser')) {
-        this.userDetails = localStorage.getItem('ideaBoardUser');
-        this.isUserLoggedIn = true;
-      }
-    },
     addNewIdea() {
-      this.isNewIdea = true
-    },
-    removeNewIdea() {
-      this.isNewIdea = false
-    },
-    loggedInSuccess() {
-      this.isUserLoggedIn = true;
+      this.$store.commit('ADD_NEW_IDEA');
     },
     logout() {
-      localStorage.removeItem('ideaBoardUser');
-      this.isUserLoggedIn = false;
+      this.$store.dispatch('LOGOUT');
       this.$gAuth.signOut().then(() => {
           alert("Signout successfully");
       })
