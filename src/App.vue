@@ -10,17 +10,19 @@
           color="indigo"
           dark
         >
-    
           <v-toolbar-title>Ideaboard</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn icon @click="addNewIdea()">
+          <v-btn icon @click="addNewIdea()" v-if="isUserLoggedIn">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-toolbar>
 
-        <v-container fluid>
+        <v-container fluid v-if="isUserLoggedIn">
           <ListIdeas v-if="ideaList" />
           <IdeaForm v-if="isNewIdea" @removeNewIdea="removeNewIdea" />
+        </v-container>
+        <v-container fluid v-if="!isUserLoggedIn">
+          <Login @loggedInSuccess="loggedInSuccess" />
         </v-container>
       </v-card>
       
@@ -31,13 +33,15 @@
 <script>
 import IdeaForm from './components/IdeaForm';
 import ListIdeas from './components/ListIdeas';
+import Login from './components/Login';
 
 export default {
   name: 'App',
 
   components: {
     IdeaForm,
-    ListIdeas
+    ListIdeas,
+    Login,
   },
 
   data: () => ({
@@ -61,6 +65,9 @@ export default {
     },
     removeNewIdea() {
       this.isNewIdea = false
+    },
+    loggedInSuccess() {
+      this.isUserLoggedIn = true;
     }
   },
 };
