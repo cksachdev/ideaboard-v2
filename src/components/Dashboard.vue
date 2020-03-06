@@ -5,7 +5,15 @@
           <ListIdeas />
         </v-container>
         <v-container fluid v-if="!isUserLoggedIn">
-          <Login />
+          <v-card
+                class="mx-auto"
+                color="white"
+                width="200px"
+            >
+                <v-card-text>
+                Centered
+                </v-card-text>
+            </v-card>
         </v-container>
     </div>
 </template>
@@ -14,14 +22,12 @@
 
 import IdeaForm from './IdeaForm';
 import ListIdeas from './ListIdeas';
-import Login from './Login';
 import { mapState } from 'vuex'
 export default {
     name: 'Dashboard',
     components: {
         IdeaForm,
-        ListIdeas,
-        Login
+        ListIdeas
     },
     data() {
         return {

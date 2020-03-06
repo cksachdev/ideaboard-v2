@@ -15,6 +15,9 @@
           <v-btn @click="logout()" v-if="isUserLoggedIn">
             LOGOUT
           </v-btn>
+          <v-btn @click="initAuth()" v-if="!isUserLoggedIn">
+            Signin
+          </v-btn>
         </v-toolbar>
 
         <router-view></router-view>
@@ -49,6 +52,20 @@ export default {
       .catch(error  => {
           console.log(error);
       })
+    },
+    initAuth() {
+        this.$gAuth.signIn()
+        .then(GoogleUser => {
+            const userDetails = GoogleUser.getBasicProfile();
+            this.$store.commit('SET_USER_DETAILS', userDetails)
+            this.$store.commit('SET_USER_EMAIL', userDetails.zu)
+            this.$store.commit('SET_USER_LOGGEDIN', this.$gAuth.isAuthorized)
+            localStorage.setItem('ideaBoardUser', JSON.stringify(userDetails));
+        })
+        .catch(error  => {
+        //on fail do something
+            console.log(error);
+        })
     }
   },
 };
