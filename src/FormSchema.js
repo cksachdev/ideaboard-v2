@@ -1,20 +1,20 @@
 module.exports = {
     "type": "object",
     "required": [
-        "starttime",
-        "endtime",
+        "startTime",
+        "endTime",
         "title",
         "description",
         "tags"
     ],
     "properties": {
-        "starttime": {
+        "startTime": {
           "name": "startTime",
           "type": "string",
           "format": "time",
           "x-class": "sm6 pr-4"
         },
-        "endtime": {
+        "endTime": {
           "type": "string",
           "format": "time",
           "x-class": "sm6"

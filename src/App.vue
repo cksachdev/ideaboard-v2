@@ -7,7 +7,7 @@
         elevation="0"
       >
         <v-toolbar color="indigo" dark>
-          <v-btn icon @click="addNewIdea()" v-if="isUserLoggedIn">
+          <v-btn :disabled="isNewIdea" icon @click="addNewIdea()" v-if="isUserLoggedIn">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
           <v-toolbar-title>Ideaboard</v-toolbar-title>
@@ -34,6 +34,7 @@ export default {
   computed: {
     ...mapState([
         'isUserLoggedIn',
+        'isNewIdea'
     ]),
   },
   methods: {

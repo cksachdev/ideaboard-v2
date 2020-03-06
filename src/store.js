@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
-axios.defaults.baseURL = 'https://script.google.com/macros/s/AKfycbwHJXdd3uHsbnKtd_1MTYALHmWVF0aSOZ64xqB1sZDCrlLIdfw/exec'
+const baseURL = 'https://script.google.com/macros/s/AKfycbwHJXdd3uHsbnKtd_1MTYALHmWVF0aSOZ64xqB1sZDCrlLIdfw/exec'
 
 Vue.use(Vuex, VueAxios, axios)
 
@@ -14,7 +14,8 @@ export default new Vuex.Store({
     userDetails: {},
     userEmail: '',
     isNewIdea: false,
-    ideaList: []
+    ideaList: [],
+    dataObjectModal: []
   },
   getters: {
     frameworkCount: state => {
@@ -36,6 +37,12 @@ export default new Vuex.Store({
     },
     REMOVE_NEW_IDEA (state) {
         state.isNewIdea = false
+    },
+    ADD_IDEA_TO_LIST (state, ideaList) {
+        state.ideaList = ideaList
+    },
+    IDEA_OBJECT_MODEL (state, ideaModal) {
+        state.dataObjectModal.push(ideaModal);
     }
   },
   actions: {
@@ -51,8 +58,24 @@ export default new Vuex.Store({
             commit('SET_USER_EMAIL', userData.zu) 
             commit('SET_USER_LOGGEDIN', !state.isUserLoggedIn) 
         }
+    },
+    GET_IDEAS_LIST: async({ commit, state }) => {
+        axios.get(`${baseURL}?action=read&table=idea`)
+        .then(response => {
+            if(response.status === 200) {
+                commit('ADD_IDEA_TO_LIST', response.data.records)
+                for(let ideaObj of state.ideaList) {
+                    let tags = Vue._.split(ideaObj.tags, ', ');
+                    ideaObj.tags = tags
+                    commit('IDEA_OBJECT_MODEL', ideaObj)
+                }
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
-  }
+   }
 
 
 })

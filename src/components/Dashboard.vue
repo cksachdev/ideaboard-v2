@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-container fluid v-if="isUserLoggedIn">
-          <ListIdeas v-if="ideaList.length > 0" />
+          <ListIdeas />
           <IdeaForm v-if="isNewIdea" />
         </v-container>
         <v-container fluid v-if="!isUserLoggedIn">
