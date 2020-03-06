@@ -18,9 +18,6 @@ export default new Vuex.Store({
     dataObjectModal: []
   },
   getters: {
-    frameworkCount: state => {
-        return state.frameworkList.length
-    }
   },
   mutations: {
     SET_USER_DETAILS (state, user) {
@@ -40,6 +37,9 @@ export default new Vuex.Store({
     },
     ADD_IDEA_TO_LIST (state, ideaList) {
         state.ideaList = ideaList
+    },
+    SET_LIST_MODAL_EMPTY (state) {
+        state.dataObjectModal = [];
     },
     IDEA_OBJECT_MODEL (state, ideaModal) {
         state.dataObjectModal.push(ideaModal);
@@ -64,11 +64,37 @@ export default new Vuex.Store({
         .then(response => {
             if(response.status === 200) {
                 commit('ADD_IDEA_TO_LIST', response.data.records)
+                commit('SET_LIST_MODAL_EMPTY');
                 for(let ideaObj of state.ideaList) {
                     let tags = Vue._.split(ideaObj.tags, ', ');
                     ideaObj.tags = tags
                     commit('IDEA_OBJECT_MODEL', ideaObj)
                 }
+                commit('REMOVE_NEW_IDEA')
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
+    REMOVE_IDEA: async({ dispatch }, payload) => {
+        axios.get(`${baseURL}?action=delete&table=idea&id=${payload}`)
+        .then(response => {
+            if(response.status === 200) {
+                alert('idea deleted successfully');
+                dispatch('GET_IDEAS_LIST');
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
+    CREATE_IDEA: async({ dispatch }, payload) => {
+        axios.get(`${baseURL}?action=insert&table=idea&data=${JSON.stringify(payload)}`)
+        .then(response => {
+            if(response.status === 200) {
+                alert('idea inserted successfully');
+                dispatch('GET_IDEAS_LIST');
             }
         })
         .catch(error => {

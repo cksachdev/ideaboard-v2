@@ -1,23 +1,33 @@
 <template>
     <v-row class="text-center" dense>
       <v-col cols="12">
-        <v-card class="pa-5 mb-3" v-for="(idea, index) in ideaList" :key="idea.id">
-          <v-form v-model="formValid">
-            <v-jsonschema-form 
-              v-if="schema" 
-              :schema="schema" 
-              :model="dataObjectModal[index]"
-              :options="options" 
-              @error="showError" />
-              <v-card-actions right>
-                <v-btn color="primary" :disabled="!formValid">Save</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn color="red" icon @click="removeIdea()">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-card-actions>
-          </v-form>
-        </v-card>
+        <v-expansion-panels >
+          <v-expansion-panel v-for="(idea, index) in ideaList" :key="idea.id">
+            <v-expansion-panel-header>
+              {{ idea.title }}
+              <template v-slot:actions>
+                <v-icon color="primary">$expand</v-icon>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-form v-model="formValid">
+                <v-jsonschema-form 
+                  v-if="schema" 
+                  :schema="schema" 
+                  :model="dataObjectModal[index]"
+                  :options="options" 
+                  @error="showError" />
+                  <v-card-actions right>
+                    <v-btn color="primary" :disabled="!formValid">Save</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red" icon @click="removeIdea(idea.id)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+              </v-form>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
 </template>
@@ -51,8 +61,11 @@ import { mapState } from 'vuex'
       showError(err) {
         window.alert(err)
       },
-      async getIdeaLists() {
-        await this.$store.dispatch('GET_IDEAS_LIST');
+      getIdeaLists() {
+        this.$store.dispatch('GET_IDEAS_LIST');
+      },
+      removeIdea(ideaId) {
+        this.$store.dispatch('REMOVE_IDEA', ideaId);
       }
     }
   }
