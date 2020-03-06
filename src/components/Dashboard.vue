@@ -7,11 +7,11 @@
         <v-container fluid v-if="!isUserLoggedIn">
           <v-card
                 class="mx-auto"
-                color="white"
-                width="200px"
+                width="500px"
+                elevation="0"
             >
-                <v-card-text>
-                Centered
+                <v-card-text class="text-center" style="height: 300px;">
+                    <h2 style="    line-height: 300px;}">Please signin to use ideaboard</h2>
                 </v-card-text>
             </v-card>
         </v-container>

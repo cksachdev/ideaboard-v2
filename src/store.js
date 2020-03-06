@@ -18,6 +18,12 @@ export default new Vuex.Store({
     dataObjectModal: []
   },
   getters: {
+    GET_IDEA_LIST: state => {
+        return state.ideaList
+    },
+    GET_DATA_OBJ_MODAL: state => {
+        return state.dataObjectModal
+    }
   },
   mutations: {
     SET_USER_DETAILS (state, user) {
@@ -81,7 +87,6 @@ export default new Vuex.Store({
         axios.get(`${baseURL}?action=delete&table=idea&id=${payload}`)
         .then(response => {
             if(response.status === 200) {
-                alert('idea deleted successfully');
                 dispatch('GET_IDEAS_LIST');
             }
         })

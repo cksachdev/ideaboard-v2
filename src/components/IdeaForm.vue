@@ -44,7 +44,7 @@
     computed: {
       ...mapState([
         'userEmail',
-      ]),
+      ])
     },
     methods: {
       showError(err) {
