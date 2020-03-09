@@ -75,10 +75,7 @@ import { mapState, mapGetters } from 'vuex'
       },
       removeIdea(ideaId, showAlert=true) {
         if(ideaId) {
-          this.$store.dispatch('REMOVE_IDEA', ideaId);
-          if(showAlert) {
-            alert("Idea deleted successfully")
-          }
+          this.$store.dispatch('REMOVE_IDEA', {'ideaid': ideaId, 'showAlert': showAlert});
         }
       }
     }

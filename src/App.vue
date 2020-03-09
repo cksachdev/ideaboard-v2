@@ -70,7 +70,8 @@ export default {
             this.$store.commit('SET_USER_DETAILS', userDetails)
             this.$store.commit('SET_USER_EMAIL', userDetails.zu)
             this.$store.commit('SET_USER_LOGGEDIN', this.$gAuth.isAuthorized)
-            localStorage.setItem('ideaBoardUser', JSON.stringify(userDetails));
+            this.$store.dispatch('CHECK_IS_LOGGEDIN')
+            // localStorage.setItem('ideaBoardUser', JSON.stringify(userDetails));
         })
         .catch(error  => {
         //on fail do something

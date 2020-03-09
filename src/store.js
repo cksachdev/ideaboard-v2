@@ -3,12 +3,22 @@ import Vuex from 'vuex'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import createPersistedState from "vuex-persistedstate";
+import SecureLS from "secure-ls";
+const ls = new SecureLS({ isCompression: false });
 
 const baseURL = 'https://script.google.com/macros/s/AKfycbwHJXdd3uHsbnKtd_1MTYALHmWVF0aSOZ64xqB1sZDCrlLIdfw/exec'
 
 Vue.use(Vuex, VueAxios, axios)
 
 export default new Vuex.Store({
+    plugins: [createPersistedState({
+        storage: {
+          getItem: key => ls.get(key),
+          setItem: (key, value) => ls.set(key, value),
+          removeItem: key => ls.remove(key)
+        }
+      })],
   state: {
     isUserLoggedIn: false,
     userDetails: {},
@@ -42,8 +52,11 @@ export default new Vuex.Store({
     REMOVE_NEW_IDEA (state) {
         state.isNewIdea = false
     },
-    ADD_IDEA_TO_LIST (state, ideaList) {
+    SET_IDEA_TO_LIST (state, ideaList) {
         state.ideaList = ideaList
+    },
+    PUSH_IDEA_TO_LIST (state, idea) {
+        state.ideaList.push(idea)
     },
     SET_LIST_MODAL_EMPTY (state) {
         state.dataObjectModal = [];
@@ -62,28 +75,57 @@ export default new Vuex.Store({
     },
     CHECK_IS_LOGGEDIN: async({ commit, state }) => {
         commit('SET_IS_LOADING', true);
-        let userData = localStorage.getItem('ideaBoardUser')
-        if(userData) {
-            userData = JSON.parse(userData)
-            commit('SET_USER_DETAILS', userData) 
-            commit('SET_USER_EMAIL', userData.zu) 
-            commit('SET_USER_LOGGEDIN', !state.isUserLoggedIn)
-            commit('SET_IS_LOADING', false); 
+        if(state.userDetails.zu) {
+            commit('SET_USER_DETAILS', state.userDetails)
+            commit('SET_USER_EMAIL', state.userDetails.zu)
+            commit('SET_USER_LOGGEDIN', true)
+        } else {
+            commit('SET_USER_DETAILS', {})
+            commit('SET_USER_EMAIL', '')
+            commit('SET_USER_LOGGEDIN', false)
         }
+        commit('SET_IS_LOADING', false); 
     },
     GET_IDEAS_LIST: async({ commit, state }) => {
+        if(state.ideaList.length <= 0) {
+            commit('SET_IS_LOADING', true);
+            axios.get(`${baseURL}?action=read&table=idea`)
+            .then(response => {
+                if(response.status === 200) {
+                    commit('SET_IDEA_TO_LIST', response.data.records)
+                    commit('SET_LIST_MODAL_EMPTY');
+                    for(let ideaObj of state.ideaList) {
+                        let tags = Vue._.split(ideaObj.tags, ', ');
+                        ideaObj.tags = tags
+                        commit('IDEA_OBJECT_MODEL', ideaObj)
+                    }
+                    commit('REMOVE_NEW_IDEA')
+                    commit('SET_IS_LOADING', false);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+    },
+    REMOVE_IDEA: async({ commit, state }, payload) => {
         commit('SET_IS_LOADING', true);
-        axios.get(`${baseURL}?action=read&table=idea`)
+        axios.get(`${baseURL}?action=delete&table=idea&id=${payload.ideaid}`)
         .then(response => {
             if(response.status === 200) {
-                commit('ADD_IDEA_TO_LIST', response.data.records)
-                commit('SET_LIST_MODAL_EMPTY');
-                for(let ideaObj of state.ideaList) {
+                let oldIdeaList = state.ideaList
+                let ideaList = _.remove(oldIdeaList, function(idea) {
+                    return idea.id !== payload.ideaid;
+                });  
+                commit('SET_IDEA_TO_LIST', ideaList)
+                for(let ideaObj of ideaList) {
                     let tags = Vue._.split(ideaObj.tags, ', ');
                     ideaObj.tags = tags
                     commit('IDEA_OBJECT_MODEL', ideaObj)
                 }
-                commit('REMOVE_NEW_IDEA')
+                if(payload.showAlert) {
+                    alert('Idea deleted successfully.')
+                }
                 commit('SET_IS_LOADING', false);
             }
         })
@@ -91,25 +133,19 @@ export default new Vuex.Store({
             console.log(error);
         });
     },
-    REMOVE_IDEA: async({ commit, dispatch }, payload) => {
-        commit('SET_IS_LOADING', true);
-        axios.get(`${baseURL}?action=delete&table=idea&id=${payload}`)
-        .then(response => {
-            if(response.status === 200) {
-                dispatch('GET_IDEAS_LIST');
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    },
-    CREATE_IDEA: async({ commit, dispatch }, payload) => {
+    CREATE_IDEA: async({ commit }, payload) => {
         commit('SET_IS_LOADING', true);
         axios.get(`${baseURL}?action=insert&table=idea&data=${JSON.stringify(payload)}`)
         .then(response => {
             if(response.status === 200) {
                 alert('idea inserted successfully');
-                dispatch('GET_IDEAS_LIST');
+                let resData = response.data.data
+                commit('PUSH_IDEA_TO_LIST', resData)
+                let tags = Vue._.split(resData.tags, ', ');
+                resData.tags = tags
+                commit('IDEA_OBJECT_MODEL', resData)
+                commit('SET_IS_LOADING', false);
+                commit('REMOVE_NEW_IDEA')
             }
         })
         .catch(error => {
