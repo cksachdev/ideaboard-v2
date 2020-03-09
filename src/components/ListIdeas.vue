@@ -3,16 +3,13 @@
       <v-col cols="12">
         <v-expansion-panels v-if="GET_IDEA_LIST.length > 0" :accordion="true">
           <v-expansion-panel v-for="(item, index) in GET_IDEA_LIST" :key="item.id">
-            <v-expansion-panel-header>
-              {{ item.title }}
-            </v-expansion-panel-header>
-            
+            <v-expansion-panel-header>{{ item.title }}</v-expansion-panel-header>
             <v-expansion-panel-content>
                 <v-form v-model="formValid">
                   <v-jsonschema-form 
                   v-if="schema" 
                   :schema="schema" 
-                  :model="GET_DATA_OBJ_MODAL[index]"
+                  :model="GET_IDEA_LIST[index]"
                   :options="options" 
                   @error="showError" />
                 </v-form>
@@ -36,7 +33,9 @@
 import { mapState, mapGetters } from 'vuex'
   export default {
     name: 'ListIdeas',
-    components: {VJsonschemaForm},
+    components: {
+      VJsonschemaForm
+    },
     data: () => ({
       schema: FormSchema,
       formValid: false,
@@ -51,8 +50,7 @@ import { mapState, mapGetters } from 'vuex'
         'userEmail'
       ]),
       ...mapGetters([
-        'GET_IDEA_LIST',
-        'GET_DATA_OBJ_MODAL',
+        'GET_IDEA_LIST'
       ])
     },
     mounted () {
@@ -66,7 +64,7 @@ import { mapState, mapGetters } from 'vuex'
         this.$store.dispatch('GET_IDEAS_LIST');
       },
       saveData(ideaId, modelIndex) {
-        let ideaData = this._.cloneDeep(this.GET_DATA_OBJ_MODAL[modelIndex]);
+        let ideaData = this._.cloneDeep(this.GET_IDEA_LIST[modelIndex]);
         ideaData.email = this.userEmail
         ideaData.tags = this._.join(ideaData.tags, ', ')
 
