@@ -4,8 +4,9 @@
         <v-expansion-panels v-if="GET_IDEA_LIST.length > 0" :accordion="true">
           <v-expansion-panel v-for="(item, index) in GET_IDEA_LIST" :key="item.id">
             <v-expansion-panel-header>
-              {{ item.title }} {{item.id}}
+              {{ item.title }}
             </v-expansion-panel-header>
+            
             <v-expansion-panel-content>
                 <v-form v-model="formValid">
                   <v-jsonschema-form 
@@ -18,7 +19,7 @@
                 <v-card-actions right>
                   <v-btn color="primary" :disabled="!formValid" @click="saveData(item.id, index)">Save</v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn color="red" :data-itemid="item.id" icon @click="removeIdea(item.id)">
+                  <v-btn color="red" icon @click="removeIdea(item.id)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </v-card-actions>
@@ -42,7 +43,7 @@ import { mapState, mapGetters } from 'vuex'
       options: {
         debug: true,
         disableAll: false,
-        autoFoldObjects: true
+        autoFoldObjects: false
       }
     }),
     computed: {
@@ -69,12 +70,15 @@ import { mapState, mapGetters } from 'vuex'
         ideaData.email = this.userEmail
         ideaData.tags = this._.join(ideaData.tags, ', ')
 
-        this.removeIdea(ideaId)
+        this.removeIdea(ideaId, false)
         this.$store.dispatch('CREATE_IDEA', ideaData);
       },
-      removeIdea(ideaId) {
-        if(ideaId.id) {
-          this.$store.dispatch('REMOVE_IDEA', ideaId.id);
+      removeIdea(ideaId, showAlert=true) {
+        if(ideaId) {
+          this.$store.dispatch('REMOVE_IDEA', ideaId);
+          if(showAlert) {
+            alert("Idea deleted successfully")
+          }
         }
       }
     }

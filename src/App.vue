@@ -20,9 +20,18 @@
           </v-btn>
         </v-toolbar>
 
-        <router-view></router-view>
-
+        <router-view></router-view>        
       </v-card>
+      <v-overlay v-if="isLoading" class="vLoader" :opacity="0.30" color="rgb(204, 204, 204)">
+        <v-row class="fill-height" align-content="center" justify="center" >
+          <v-progress-circular
+                :size="70"
+                :width="7"
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+        </v-row>
+      </v-overlay>
       
     </v-content>
   </v-app>
@@ -37,7 +46,8 @@ export default {
   computed: {
     ...mapState([
         'isUserLoggedIn',
-        'isNewIdea'
+        'isNewIdea',
+        'isLoading'
     ]),
   },
   methods: {
@@ -80,5 +90,11 @@ export default {
   overflow: auto;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   margin: 10px;
+}
+.vLoader {
+    width: 430px;
+    left: 10px !important;
+    top: 10px !important;
+    height: 600px;
 }
 </style>

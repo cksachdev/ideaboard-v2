@@ -34,6 +34,10 @@ module.exports = {
             "type": "string"
           },
           "minItems": 1
+        },
+        "id": {
+          "type": "string",
+          "x-display": "hidden"
         }
     }
   }

@@ -15,7 +15,8 @@ export default new Vuex.Store({
     userEmail: '',
     isNewIdea: false,
     ideaList: [],
-    dataObjectModal: []
+    dataObjectModal: [],
+    isLoading: false
   },
   getters: {
     GET_IDEA_LIST: state => {
@@ -49,6 +50,9 @@ export default new Vuex.Store({
     },
     IDEA_OBJECT_MODEL (state, ideaModal) {
         state.dataObjectModal.push(ideaModal);
+    },
+    SET_IS_LOADING (state, value) {
+        state.isLoading = value
     }
   },
   actions: {
@@ -57,15 +61,18 @@ export default new Vuex.Store({
         commit('SET_USER_LOGGEDIN', !state.isUserLoggedIn)
     },
     CHECK_IS_LOGGEDIN: async({ commit, state }) => {
+        commit('SET_IS_LOADING', true);
         let userData = localStorage.getItem('ideaBoardUser')
         if(userData) {
             userData = JSON.parse(userData)
             commit('SET_USER_DETAILS', userData) 
             commit('SET_USER_EMAIL', userData.zu) 
-            commit('SET_USER_LOGGEDIN', !state.isUserLoggedIn) 
+            commit('SET_USER_LOGGEDIN', !state.isUserLoggedIn)
+            commit('SET_IS_LOADING', false); 
         }
     },
     GET_IDEAS_LIST: async({ commit, state }) => {
+        commit('SET_IS_LOADING', true);
         axios.get(`${baseURL}?action=read&table=idea`)
         .then(response => {
             if(response.status === 200) {
@@ -77,13 +84,15 @@ export default new Vuex.Store({
                     commit('IDEA_OBJECT_MODEL', ideaObj)
                 }
                 commit('REMOVE_NEW_IDEA')
+                commit('SET_IS_LOADING', false);
             }
         })
         .catch(error => {
             console.log(error);
         });
     },
-    REMOVE_IDEA: async({ dispatch }, payload) => {
+    REMOVE_IDEA: async({ commit, dispatch }, payload) => {
+        commit('SET_IS_LOADING', true);
         axios.get(`${baseURL}?action=delete&table=idea&id=${payload}`)
         .then(response => {
             if(response.status === 200) {
@@ -94,7 +103,8 @@ export default new Vuex.Store({
             console.log(error);
         });
     },
-    CREATE_IDEA: async({ dispatch }, payload) => {
+    CREATE_IDEA: async({ commit, dispatch }, payload) => {
+        commit('SET_IS_LOADING', true);
         axios.get(`${baseURL}?action=insert&table=idea&data=${JSON.stringify(payload)}`)
         .then(response => {
             if(response.status === 200) {
