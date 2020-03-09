@@ -64,12 +64,20 @@ export default new Vuex.Store({
     },
     SET_IS_LOADING (state, value) {
         state.isLoading = value
+    },
+    RESET_STATE (state) {
+        state.userDetails = {},
+        state.userEmail = '',
+        state.isNewIdea = false,
+        state.ideaList = [],
+        state.isLoading = false
     }
   },
   actions: {
-    LOGOUT: async ({ commit, state}) => {
+    LOGOUT: async ({ commit, dispatch}) => {
         localStorage.removeItem('ideaBoard');
         commit('SET_USER_LOGGEDIN', false)
+        commit('RESET_STATE')
     },
     CHECK_IS_LOGGEDIN: async({ commit, state }) => {
         commit('SET_IS_LOADING', true);
