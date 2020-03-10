@@ -13,9 +13,14 @@
               
               <v-expansion-panel v-for="(item, index) in GET_IDEA_LIST" :key="item.id" class="item">
                 
-                <v-expansion-panel-header>
+                <v-expansion-panel-header disable-icon-rotate>
                   <v-icon class="dragIcon">mdi-drag</v-icon>
                   {{ item.title }}
+                  <template v-slot:actions>
+                    <v-btn icon @click="openConfirmationBox(item.id)"><v-icon color="red">mdi-delete</v-icon></v-btn>
+                    <v-icon color="primary">$expand</v-icon>
+                  </template>
+                  
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-form v-model="formValid">
@@ -26,19 +31,40 @@
                       :options="options" 
                       @error="showError" />
                     </v-form>
-                    <v-card-actions right>
-                      <v-btn color="primary" :disabled="!formValid" @click="saveData(item.id, index)">Save</v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn color="red" icon @click="removeIdea(item.id)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
+                    <v-card-actions class="pa-0">
+                      <v-btn text color="success" class="mx-auto" :disabled="!formValid" @click="saveData(item.id, index)">Save</v-btn>
                     </v-card-actions>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </transition-group>
           </draggable>
         </v-expansion-panels>
-        
+        <div v-else>
+          <v-card
+                class="mx-auto"
+                width="500px"
+                elevation="0"
+            >
+                <v-card-text class="text-center" style="height: 300px;">
+                    <h2>Click on + button to add idea</h2>
+                </v-card-text>
+            </v-card>
+        </div>
+
+        <v-dialog v-model="dialog" max-width="290" >
+          <v-card>
+            <v-card-title class="headline">
+              Do you want to delete idea?
+            </v-card-title>
+            
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialog = false">Disagree </v-btn>
+              <v-btn color="green darken-1" text @click="removeIdea(ideaTobeDelete)" >Agree</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
       </v-col>
     </v-row>
 </template>
@@ -62,7 +88,9 @@ import draggable from 'vuedraggable'
         disableAll: false,
         autoFoldObjects: false
       },
-      drag: false
+      ideaTobeDelete: '',
+      drag: false,
+      dialog: false
     }),
     computed: {
       ...mapState([
@@ -109,10 +137,15 @@ import draggable from 'vuedraggable'
       removeIdea(ideaId, showAlert=true) {
         if(ideaId) {
           this.$store.dispatch('REMOVE_IDEA', {'ideaid': ideaId, 'showAlert': showAlert});
+          this.dialog = false
         }
       },
       handleDrop(evt) {
         this.drag = false;
+      },
+      openConfirmationBox(ideaid) {
+        this.ideaTobeDelete = ideaid
+        this.dialog = true;
       }
     }
   }

@@ -27,7 +27,8 @@ export default new Vuex.Store({
     isNewIdea: false,
     ideaList: [],
     dataObjectModal: [],
-    isLoading: false
+    isLoading: false,
+    toasterMsg: ''
   },
   getters: {
     GET_IDEA_LIST: state => {
@@ -70,7 +71,11 @@ export default new Vuex.Store({
         state.userEmail = '',
         state.isNewIdea = false,
         state.ideaList = [],
-        state.isLoading = false
+        state.isLoading = false,
+        state.toasterMsg = ''
+    },
+    RESET_TOASTER (state) {
+        state.toasterMsg = ''
     }
   },
   actions: {
@@ -91,6 +96,24 @@ export default new Vuex.Store({
             commit('SET_USER_LOGGEDIN', false)
         }
         commit('SET_IS_LOADING', false); 
+    },
+    SAVE_USER_DETAILS: async({ commit, state }) => {
+        commit('SET_IS_LOADING', true);
+        const payload = {
+            "name": state.userDetails.Ad,
+            "email": state.userEmail,
+            "profilephoto": state.userDetails.UK
+        }
+        axios.get(`${baseURL}?action=insert&table=user&data=${JSON.stringify(payload)}`)
+        .then(response => {
+            if(response.status === 200) {
+                state.toasterMsg = "Logged in successfully!"
+                commit('SET_IS_LOADING', false);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
     },
     GET_IDEAS_LIST: async({ commit, state }) => {
         if(state.ideaList.length <= 0) {
@@ -126,7 +149,7 @@ export default new Vuex.Store({
                 });  
                 commit('SET_IDEA_TO_LIST', ideaList)
                 if(payload.showAlert) {
-                    alert('Idea deleted successfully.')
+                    state.toasterMsg = "Idea removed !"
                 }
                 commit('SET_IS_LOADING', false);
             }
@@ -135,18 +158,18 @@ export default new Vuex.Store({
             console.log(error);
         });
     },
-    CREATE_IDEA: async({ commit }, payload) => {
+    CREATE_IDEA: async({ commit, state }, payload) => {
         commit('SET_IS_LOADING', true);
         axios.get(`${baseURL}?action=insert&table=idea&data=${JSON.stringify(payload)}`)
         .then(response => {
             if(response.status === 200) {
-                alert('idea inserted successfully');
                 let resData = response.data.data
                 let tags = Vue._.split(resData.tags, ', ');
                 resData.tags = tags
                 commit('PUSH_IDEA_TO_LIST', resData)
                 commit('SET_IS_LOADING', false);
                 commit('REMOVE_NEW_IDEA')
+                state.toasterMsg = "Idea save sucessfully"
             }
         })
         .catch(error => {

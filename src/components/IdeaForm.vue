@@ -10,12 +10,9 @@
               :options="options" 
               @error="showError" />
 
-              <v-card-actions right>
-                <v-btn color="primary" :disabled="!formValid" @click="saveData">Save</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn color="red" icon @click="removeNewIdea()">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
+              <v-card-actions>
+                <v-btn text color="primary" :disabled="!formValid" @click="saveData">Save</v-btn>
+                <v-btn text color="red" @click="removeNewIdea()">Delete</v-btn>
               </v-card-actions>
           </v-form>
         </v-card>

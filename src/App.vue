@@ -19,6 +19,15 @@
             Signin
           </v-btn>
         </v-toolbar>
+        <v-alert
+          dense
+          text
+          type="success"
+          class="toasterCls"
+          v-if="toasterMsg !== ''"
+        >
+          {{ toasterMsg }}
+        </v-alert>
 
         <router-view></router-view>        
       </v-card>
@@ -32,6 +41,7 @@
               ></v-progress-circular>
         </v-row>
       </v-overlay>
+      
       
     </v-content>
   </v-app>
@@ -47,7 +57,8 @@ export default {
     ...mapState([
         'isUserLoggedIn',
         'isNewIdea',
-        'isLoading'
+        'isLoading',
+        'toasterMsg',
     ]),
   },
   methods: {
@@ -71,12 +82,23 @@ export default {
             this.$store.commit('SET_USER_EMAIL', userDetails.zu)
             this.$store.commit('SET_USER_LOGGEDIN', this.$gAuth.isAuthorized)
             this.$store.dispatch('CHECK_IS_LOGGEDIN')
+            this.$store.dispatch('SAVE_USER_DETAILS')
             // localStorage.setItem('ideaBoardUser', JSON.stringify(userDetails));
         })
         .catch(error  => {
         //on fail do something
             console.log(error);
         })
+    }
+  },
+  watch: {
+    toasterMsg(newValue, oldValue) {
+      const that = this
+      if(newValue !== '') { 
+        setTimeout(() => {
+          that.$store.commit('RESET_TOASTER')
+        }, 5000);
+      }
     }
   },
 };
@@ -87,15 +109,12 @@ export default {
   width: 450px !important;
 }
 .fixWidth .v-content__wrap {
-  max-height: 600px;
   overflow: auto;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  margin: 10px;
 }
 .vLoader {
-    width: 430px;
-    left: 10px !important;
-    top: 10px !important;
-    height: 600px;
+    width: 450px;
+    left: 0px !important;
+    top: 0px !important;
 }
 </style>
