@@ -19,7 +19,6 @@
                     <v-btn icon @click="openConfirmationBox(item.id)"><v-icon color="red">mdi-delete</v-icon></v-btn>
                     <v-icon color="primary">$expand</v-icon>
                   </template>
-                  
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-form v-model="formValid">
@@ -148,6 +147,9 @@ import draggable from 'vuedraggable'
 </script>
 
 <style lang="css">
+.v-item-group div:first-child {
+  width: 100%;
+}
 .v-expansion-panel-header {
   padding-left: 30px !important;
 }
