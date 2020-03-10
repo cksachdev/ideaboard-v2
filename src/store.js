@@ -79,7 +79,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    LOGOUT: async ({ commit, dispatch}) => {
+    LOGOUT: async ({ commit }) => {
         localStorage.removeItem('ideaBoard');
         commit('SET_USER_LOGGEDIN', false)
         commit('RESET_STATE')
@@ -144,7 +144,7 @@ export default new Vuex.Store({
         .then(response => {
             if(response.status === 200) {
                 let oldIdeaList = state.ideaList
-                let ideaList = _.remove(oldIdeaList, function(idea) {
+                let ideaList = Vue._.remove(oldIdeaList, function(idea) {
                     return idea.id !== payload.ideaid;
                 });  
                 commit('SET_IDEA_TO_LIST', ideaList)

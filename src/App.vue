@@ -92,7 +92,7 @@ export default {
     }
   },
   watch: {
-    toasterMsg(newValue, oldValue) {
+    toasterMsg(newValue) {
       const that = this
       if(newValue !== '') { 
         setTimeout(() => {

@@ -7,7 +7,6 @@
                     v-bind="dragOptions" 
                     @start="drag = true" 
                     @end="drag = false"
-                    :move="handleDrop"
                     >
             <transition-group type="transition" :name="!drag ? 'flip-list' : null">
               
@@ -139,9 +138,6 @@ import draggable from 'vuedraggable'
           this.$store.dispatch('REMOVE_IDEA', {'ideaid': ideaId, 'showAlert': showAlert});
           this.dialog = false
         }
-      },
-      handleDrop(evt) {
-        this.drag = false;
       },
       openConfirmationBox(ideaid) {
         this.ideaTobeDelete = ideaid
