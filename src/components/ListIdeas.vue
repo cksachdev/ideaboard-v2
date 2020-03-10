@@ -147,7 +147,7 @@ import draggable from 'vuedraggable'
 </script>
 
 <style lang="css">
-.v-item-group div:first-child {
+.v-item-group > div:first-child {
   width: 100%;
 }
 .v-expansion-panel-header {
