@@ -28,7 +28,8 @@ export default new Vuex.Store({
     ideaList: [],
     dataObjectModal: [],
     isLoading: false,
-    toasterMsg: ''
+    toasterMsg: '',
+    isDrawerShow: false
   },
   getters: {
     GET_IDEA_LIST: state => {
@@ -76,7 +77,13 @@ export default new Vuex.Store({
     },
     RESET_TOASTER (state) {
         state.toasterMsg = ''
-    }
+    },
+    SET_DRAWER_ACTIVE (state) {
+        state.isDrawerShow = true
+    },
+    SET_DRAWER_INACTIVE (state) {
+        state.isDrawerShow = false
+    },
   },
   actions: {
     LOGOUT: async ({ commit }) => {
