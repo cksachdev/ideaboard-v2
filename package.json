@@ -15,8 +15,6 @@
     "secure-ls": "^1.2.6",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
-    "vue-form-generator": "^2.3.4",
-    "vue-formio": "^4.0.0",
     "vue-google-oauth2": "^1.4.0",
     "vue-lodash": "^2.1.2",
     "vue-multiselect": "^2.1.6",
