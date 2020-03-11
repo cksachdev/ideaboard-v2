@@ -1,8 +1,8 @@
 <template>
     <div>
         <v-container fluid v-if="isUserLoggedIn">
-          <IdeaForm v-if="isNewIdea" />
-          <ListIdeas />
+          <idea-form v-if="isNewIdea" />
+          <list-ideas />
         </v-container>
         <v-container fluid v-if="!isUserLoggedIn">
           <v-card
@@ -20,8 +20,8 @@
 
 <script>
 
-import IdeaForm from './IdeaForm';
-import ListIdeas from './ListIdeas';
+import IdeaForm from '@/components/IdeaForm';
+import ListIdeas from '@/components/ListIdeas';
 import { mapState } from 'vuex'
 export default {
     name: 'Dashboard',

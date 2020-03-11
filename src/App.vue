@@ -1,11 +1,9 @@
 <template>
   <v-app> 
-    <div style="width:500px" class="appDrawer" :class="{ show: isDrawerShow }">
+    <div class="appDrawer">
       <v-content class="fixWidth">
-        <div style="height: 100%;">
         <v-card
           class="mx-auto"
-          max-width="500"
           elevation="0"
         >
           <v-toolbar color="indigo" dark>
@@ -14,13 +12,14 @@
             </v-btn>
             <v-toolbar-title class="pl-0">Ideaboard</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn @click="logout()" v-if="isUserLoggedIn">
+            <v-btn class="mr-10" @click="logout()" v-if="isUserLoggedIn">
               LOGOUT
             </v-btn>
-            <v-btn @click="initAuth()" v-if="!isUserLoggedIn">
+            <v-btn class="mr-10" @click="initAuth()" v-if="!isUserLoggedIn">
               Signin
             </v-btn>
           </v-toolbar>
+
           <v-alert
             dense
             text
@@ -31,9 +30,9 @@
             {{ toasterMsg }}
           </v-alert>
 
-          <router-view></router-view>        
+          <router-view></router-view>
+                  
         </v-card>
-        </div>
         <v-overlay v-if="isLoading" class="vLoader" :opacity="0.30" color="rgb(204, 204, 204)">
           <v-row class="fill-height" align-content="center" justify="center" >
             <v-progress-circular
@@ -45,9 +44,7 @@
           </v-row>
         </v-overlay>
       </v-content>
-      <v-btn color="success" class="btnIdeaBrd" @mouseenter="showDrawer">ideaboard</v-btn>
     </div>
-    <div @mouseenter="hideDrawer" style="height:100%"></div>
   </v-app>
 </template>
 
@@ -62,8 +59,7 @@ export default {
         'isUserLoggedIn',
         'isNewIdea',
         'isLoading',
-        'toasterMsg',
-        'isDrawerShow'
+        'toasterMsg'
     ]),
   },
   methods: {
@@ -94,12 +90,6 @@ export default {
         //on fail do something
             console.log(error);
         })
-    },
-    showDrawer() {
-      this.$store.commit('SET_DRAWER_ACTIVE')
-    },
-    hideDrawer() {
-      this.$store.commit('SET_DRAWER_INACTIVE')
     }
   },
   watch: {
@@ -117,7 +107,7 @@ export default {
 
 <style>
 .fixWidth {
-  width: 450px !important;
+  width: 100% !important;
   height: 100%;
 }
 .fixWidth .v-content__wrap {
@@ -125,28 +115,12 @@ export default {
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 .vLoader {
-    width: 450px;
+    width: 100%;
     left: 0px !important;
     top: 0px !important;
 }
-.btnIdeaBrd {
-    position: absolute !important;
-    right: -25px;
-    top: 50%;
-    transform: rotate(-90deg);
-}
 .appDrawer {
-    height: 100%;
-    position: fixed;
-    left: -450px;
-    transition: all 1000ms;
-    cursor: pointer;
+  height: 100%;
 }
-.appDrawer.show {
-    left: 0px;
-    transition: all 1000ms;
-}
-.appDrawer.show .btnIdeaBrd {
-  display: none;
-}
+
 </style>

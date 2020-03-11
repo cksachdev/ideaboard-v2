@@ -13,5 +13,6 @@ export default new Router({
         name: 'Dashboard',
         component: Dashboard
     },
+    { path: '*', component: Dashboard }
   ]
 })
