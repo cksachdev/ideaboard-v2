@@ -11,7 +11,7 @@
     "@koumoul/vuetify-jsonschema-form": "^0.36.4",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "secure-ls": "^1.2.6",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
